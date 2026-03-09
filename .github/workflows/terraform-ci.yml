@@ -1,0 +1,32 @@
+name: "[Terraform] CI"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - terraform/**
+      - .github/workflows/terraform-ci.yml
+  pull_request:
+    paths:
+      - terraform/**
+      - .github/workflows/terraform-ci.yml
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+    steps:
+      - uses: actions/checkout@v6
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: '~>1.14.0'
+
+      - name: Format check
+        run: make fmt-check
+
+      - name: Validate
+        run: make validate
